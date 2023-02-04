@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikijs-db-deployment
+  labels:
+    app: wikijs-db
+spec:
+  selector:
+    matchLabels:
+      app: wikijs-db
+  template:
+    metadata:
+      labels:
+        app: wikijs-db
+    spec:
+      containers:
+      - name: db
+        image: postgres:11-alpine
+        env:
+        - name: POSTGRES_DB
+          value: wiki
+        - name: POSTGRES_PASSWORD
+          value: wikijsrocks
+        - name: POSTGRES_USER
+          value: wikijs
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: db-volume
+      volumes:
+      - name: db-volume
+        persistentVolumeClaim:
+          claimName: db-pvc
